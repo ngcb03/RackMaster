@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Información máquina virtual</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        .create-btn {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 1rem;
+        }
+
+        .card-body {
+          padding: 1rem;
+        }
+
+        .form-inline {
+          flex: 0 0 60%;
+        }
+
+        .form-inline .form-control {
+          border-radius: 0.25rem;
+          padding: 0.75rem 1.5rem;
+          width: 80%;
+        }
+
+        h2 {
+          font-size: 2.5em;
+          font-weight: bold;
+          margin: 1.5rem 0;
+        }
+
+        h2 > a {
+          color: #f4f4f4;
+        }
+
+        h2 > a:hover {
+          color: white;
+          text-decoration: none;
+        }
+
+        .table-responsive {
+          margin-bottom: 1.5rem;
+        }
+
+        .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 1rem;
+          background-color: #fff;
+        }
+
+        .table th,
+        .table td {
+          text-align: left;
+          padding: 0.75rem;
+          border-top: 1px solid #dee2e6;
+        }
+
+        .table th {
+          font-weight: 700;
+          color: #495057;
+          background-color: #e9ecef;
+        }
+
+        .btns {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .btn {
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 3rem;
+        }
+
+        /* Estilos del modal */
+        .modal {
+          position: fixed;
+          z-index: 1050;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+        }
+
+        /* Contenido del modal */
+        .modal-content {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          z-index: 1060;
+          position: relative;
+        }
+
+        .modal-content-view {
+          width: 500px;
+        }
+
+        .modal-content-register {
+          width: 700px;
+        }
+
+        /* Fondo oscuro */
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        /* Otros estilos */
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 10px;
+          border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-title {
+          font-size: 1.25rem;
+        }
+
+        .btn-close {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .modal-body {
+          margin-top: 15px;
+        }
+
+        .form-label {
+          font-weight: 600;
+          margin-bottom: 5px;
+        }
+
+        .form-control {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+
+        .input-group {
+          display: flex;
+          align-items: center;
+        }
+
+        .copy-btn {
+          margin-left: 5px;
+        }
+
+        .toggle-password {
+          cursor: pointer;
+          margin: 0 15px;
+          padding: 0.2em 0 0;
+          font-size: 1.4em;
+        }
+
+        .copy-btn {
+          background-color: #28a745;
+          color: white;
+          border: none;
+          padding: 0 0.75rem;
+          cursor: pointer;
+          border-radius: 0.25rem;
+        }
+
+        .copy-btn:hover {
+          background-color: #218838;
+        }
+
+        .input-group-text {
+          background-color: #e9ecef;
+        }
+
+        .copy-success {
+          color: green;
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+        }
+
+        .btn-close {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          h2 {
+            font-size: 2em;
+          }
+
+          .container {
+            max-width: 100%;
+          }
+
+          .table {
+            font-size: 0.9em;
+          }
+
+          .btns {
+            display: block;
+          }
+
+          .btn {
+            width: 100%;
+            font-size: .95em;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          h2 {
+            font-size: 1.5em;
+          }
+
+          .table {
+            font-size: 0.8em;
+          }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navigation -->
+<div th:insert="~{/template_general.html::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <h2 class="mb-4 text-center">Información Máquina Virtual</h2>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/inicio}">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/maquinas-virtuales/a1}">Máquinas virtuales</a></li>
+        <li class="breadcrumb-item active">Información máquina virtual</li>
+    </ol>
+
+    <div class="card mb-5 shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0" >
+                <a th:if="${maquina.servidor.sistema_op.toLowerCase().contains('proxmox')}"
+                   th:href="@{'https://' + ${maquina.servidor.ip} + ':8006/#v1:0:=qemu%2F' + ${maquina.id_en_hipervisor} + ':4:::::::'}"
+                   th:text="${maquina.nombre}" target="_blank">
+                    Máquina Virtual
+                </a>
+                <span th:if="${!maquina.servidor.sistema_op.toLowerCase().contains('proxmox')}" th:text="${maquina.nombre}">
+                </span>
+            </h2>
+            <span class="badge fs-6"
+                  th:style="${maquina.en_uso} ? 'background-color: #28a745; color: white;' : 'background-color: #f3f34b; color: black;'"
+                  th:text="${maquina.en_uso} ? 'ENCENDIDA' : 'APAGADA'"></span>
+        </div>
+
+        <input type="hidden" id="elemento_id" th:value="${maquina.maquina_id}"/>
+        <div class="card-body">
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Dirección IP</h5>
+                        <p class="text-muted" th:text="${maquina.ip}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Dirección MAC</h5>
+                        <p class="text-muted" th:text="${maquina.mac}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Sistema Operativo</h5>
+                        <p class="text-muted" th:text="${maquina.sistema_op}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Procesador asignado</h5>
+                        <p class="text-muted" th:text="${maquina.procesador_asig}"></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">RAM asignada</h5>
+                        <p class="text-muted" th:text="${maquina.ram_asig} + ' GB'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Almacenamiento asignado</h5>
+                        <p class="text-muted" th:text="${maquina.almacenamiento_asig}"></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Almacenamiento total</h5>
+                        <p class="text-muted" th:text="${maquina.almacenamiento_total} + ' GB'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Proyecto</h5>
+                        <p class="text-muted" th:text="${maquina.proyecto}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Aplicación</h5>
+                        <p class="text-muted" th:text="${maquina.aplicacion}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Servicio</h5>
+                        <p class="text-muted" th:text="${maquina.servicio}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Nombre en hipervisor</h5>
+                        <p class="text-muted" th:text="${maquina.nombre_en_hipervisor}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Id en hipervisor</h5>
+                        <p class="text-muted" th:text="${maquina.id_en_hipervisor}"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Hipervisor</h5>
+                        <p class="text-muted">
+                            <a th:text="${maquina.servidor.nombre}"
+                               th:href="@{/rackmaster/servidores/a1/{servidor_id} (servidor_id=${maquina.servidor.servidor_id}) }"
+                               target="_blank"></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <!-- Credenciales de la máquina -->
+                <div class="mb-4">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <!-- Botón para abrir el modal de registro de credenciales -->
+                        <div
+                                class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                            <h5 class="fw-bold mb-0" th:text="'Credenciales de la Máquina (' + ${credenciales.size()} + ')'"></h5>
+                            <button
+                                    class="btn btn-primary btn-sm"
+                                    onclick="openRegisterCredentialModal()"
+                                    sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')"
+                            >
+                                <i class="bi bi-plus-circle"></i> Registrar credencial
+                            </button>
+                        </div>
+
+                        <!-- Tabla para las credenciales -->
+                        <div class="table-responsive">
+                            <table
+                                    class="table table-striped table-hover table-bordered align-middle"
+                            >
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Uso Destinado</th>
+                                    <th scope="col" style="width: 300px">
+                                        Detalles Credencial
+                                    </th>
+<!--                                    <th scope="col" style="width: 300px">-->
+<!--                                        Administración Web-->
+<!--                                    </th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="credencial : ${credenciales}">
+                                    <td
+                                            th:text="${credencial.uso_destinado}"
+                                            class="text-left"
+                                    ></td>
+                                    <td class="text-center">
+                                        <button
+                                                type="button"
+                                                class="btn btn-sm btn-info"
+                                                th:onclick="openCredentialModal([[${credencial}]]);"
+                                        >
+                                            <i class="bi bi-eye"></i> Ver detalles
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')" class="btns text-end mt-4">
+                <a class="btn btn-dark"
+                   th:href="@{/rackmaster/maquinas-virtuales/a2/crear-maquina/{maquina_id} (maquina_id=${maquina.maquina_id}) }">Usar plantilla</a>
+                <a class="btn btn-warning me-2"
+                   th:href="@{/rackmaster/maquinas-virtuales/a2/editar-maquina/{maquina_id} (maquina_id=${maquina.maquina_id})}">Modificar</a>
+                <a id="eliminar_maquina" class="btn btn-danger" href="javascript:void(0);"
+                   th:onclick="openDeleteMaquinaModal([[${maquina.maquina_id}]])">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los detalles de la credencial -->
+<div id="credentialDetailModal" class="modal" style="display: none">
+    <div class="modal-backdrop"></div>
+    <!-- Fondo oscuro del modal -->
+    <div class="modal-content modal-content-view">
+        <div class="modal-header">
+            <h5 class="modal-title">Detalles de la Credencial</h5>
+            <button
+                    type="button"
+                    class="btn-close"
+                    onclick="closeCredentialModal()"
+            >
+                &times;
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="credencial_usuario"
+                            readonly
+                    />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Puerto</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="credencial_puerto"
+                            readonly
+                    />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tipo de Conexión</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="credencial_tipo_conexion"
+                            readonly
+                    />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Privilegios</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="credencial_privilegios"
+                            readonly
+                    />
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input
+                                type="password"
+                                class="form-control"
+                                id="credencial_contrasenia"
+                                readonly
+                        />
+                        <button
+                                class="input-group-text toggle-password"
+                                onclick="togglePassword()"
+                        >
+                            👁️
+                        </button>
+                        <button
+                                class="btn btn-outline-secondary copy-btn p-2"
+                                onclick="copyPassword()"
+                        >
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <!-- Mensaje de confirmación al copiar -->
+                    <div
+                            id="copy-success"
+                            class="alert alert-success mt-2"
+                            style="display: none"
+                    >
+                        ¡Contraseña copiada al portapapeles!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 d-flex justify-content-center mt-3"
+             sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')">
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    style="width: 240px"
+                    onclick="openUpdateCredentialModal()">Modificar</button>
+            <a class="btn btn-danger" style="width: 240px" id="eliminar_credencial"
+               th:href="@{/rackmaster/maquinas-virtuales/a2/eliminar-credencial/}"
+               onclick="openDeleteCredencialModal(event)">Eliminar</a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para registrar credencial -->
+<div id="registerCredentialModal" class="modal" style="display: none"
+     sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')">
+    <div class="modal-content modal-content-register">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">
+                Registrar Nueva Credencial
+            </h5>
+            <button type="button" class="btn-close" onclick="closeModal()">
+                &times;
+            </button>
+        </div>
+        <div class="modal-body">
+            <form
+                    id="registerCredentialForm"
+                    action="/rackmaster/maquinas-virtuales/a2/registrar-credencial"
+                    method="post"
+                    onsubmit="return validatePassword()"
+            >
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="hidden" name="credencial_id" id="credencial_id" />
+                        <input type="hidden" name="id_equipo" id="id_equipo"/>
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Usuario</label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="usuario"
+                                    name="usuario"
+                                    minlength="4"
+                                    maxlength="160"
+                                    required
+                            />
+                        </div>
+                        <div id="mess-passchange" style="display: none; color: red">
+                            <p>
+                                Deja los campos de contraseña vacíos si no deseas cambiar la
+                                contraseña.
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contrasenia" class="form-label">Contraseña</label>
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    id="contrasenia"
+                                    name="contrasenia"
+                                    minlength="8"
+                                    maxlength="260"
+                                    title="mínimo 8 caracteres"
+                                    required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="contrasenia_conf" class="form-label"
+                            >Confirmar contraseña</label
+                            >
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    id="contrasenia_conf"
+                                    name="contrasenia_conf"
+                                    minlength="8"
+                                    maxlength="260"
+                                    required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="puerto" class="form-label">Puerto</label>
+                            <input
+                                    type="number"
+                                    class="form-control"
+                                    id="puerto"
+                                    name="puerto"
+                                    min="0"
+                                    max="1000000"
+                                    list="lista_puertos"
+                                    title="¡SI SERVIDOR NO TIENE PUERTO COLOCAR 0!"
+                                    required
+                            />
+                            <datalist id="lista_puertos">
+                                <option value="22">
+                                <option value="3389">
+                                <option value="80">
+                                <option value="8080">
+                                <option value="3306">
+                                <option value="5432">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="tipo_conexion" class="form-label"
+                            >Tipo de Conexión</label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="tipo_conexion"
+                                    name="tipo_conexion"
+                                    minlength="1"
+                                    maxlength="80"
+                                    list="lista_conexiones"
+                                    required
+                            />
+                            <datalist id="lista_conexiones">
+                                <option value="Terminal sistema">
+                                <option value="WEB">
+                                <option value="SSH">
+                                <option value="RDP">
+                            </datalist>
+                        </div>
+                        <div class="mb-3">
+                            <label for="privilegios" class="form-label"
+                            >Privilegios</label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="privilegios"
+                                    name="privilegios"
+                                    minlength="4"
+                                    maxlength="160"
+                                    list="lista_privilegios"
+                                    required
+                            />
+                            <datalist id="lista_privilegios">
+                                <option value="Administrador">
+                                <option value="Usuario común">
+                            </datalist>
+                        </div>
+                        <div class="mb-3">
+                            <label for="uso_destinado" class="form-label"
+                            >Uso Destinado</label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="uso_destinado"
+                                    name="uso_destinado"
+                                    minlength="4"
+                                    maxlength="160"
+                                    list="lista_usos"
+                                    required
+                            />
+                            <datalist id="lista_usos">
+                                <option value="Administración sistema">
+                                <option value="Administración base datos">
+                                <option value="Administración web">
+                                <option value="Uso cliente">
+                            </datalist>
+                        </div>
+                        <div class="mt-4">
+                            <button
+                                    type="submit"
+                                    class="btn btn-primary mt-3"
+                                    id="submitRegisterCredential"
+                                    form="registerCredentialForm"
+                                    style="width: 100%;"
+                            >
+                                Guardar credencial
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar la eliminación de la Máquina -->
+<div id="deleteMaquinaModal" class="modal" style="display: none">
+    <div class="modal-backdrop"></div>
+    <!-- Fondo oscuro del modal -->
+    <div class="modal-content" style="width: 600px;">
+        <div class="modal-header">
+            <h5 class="modal-title">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" onclick="closeDeleteMaquinaModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro de que desea eliminar esta máquina virtual <strong th:text="${maquina.nombre}"></strong>?</p>
+            <p><strong>Nota:</strong> Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-around">
+            <button type="button" class="btn btn-danger" style="width: 240px" id="confirmDeleteButtonMaquina">Eliminar Máquina</button>
+            <button type="button" class="btn btn-secondary" style="width: 240px" onclick="closeDeleteMaquinaModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let maquinaIdToDelete; // Variable para almacenar el ID de la máquina
+
+    function openDeleteMaquinaModal(maquinaId) {
+        maquinaIdToDelete = maquinaId; // Guardar el ID de la máquina a eliminar
+        document.getElementById('deleteMaquinaModal').style.display = 'block';
+    }
+
+    function closeDeleteMaquinaModal() {
+        document.getElementById('deleteMaquinaModal').style.display = 'none';
+    }
+
+    document.getElementById('confirmDeleteButtonMaquina').onclick = function() {
+        // Cambiar la URL de eliminación según corresponda
+        window.location.href = '/rackmaster/maquinas-virtuales/a2/eliminar-maquina/' + maquinaIdToDelete;
+    };
+</script>
+
+<!-- Modal para confirmar la eliminación de la credencial -->
+<div th:insert="~{/template_general.html::conf_eliminar_credencial}"></div>
+
+<!-- Fondo oscuro detrás del modal -->
+<div id="modalBackdrop" class="modal-backdrop" style="display: none"></div>
+
+<!-- /.container -->
+
+<!-- Footer -->
+<div th:insert="~{/template_general.html::footer}"></div>
+
+<!-- Script para copiar contraseña portapapeles -->
+<script th:src="@{/js/gestion_pass.js}"></script>
+
+<!-- Script para gestuón ventana model registro credenciales -->
+<script th:src="@{/js/modal_credenciales.js}"></script>
+
+</body>
+
+</html>

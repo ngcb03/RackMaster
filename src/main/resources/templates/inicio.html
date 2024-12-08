@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de centros de datos (DataCenters):
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Inicio</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        .create-btn {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 1rem;
+        }
+
+        .card {
+          margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+          font-size: 1.3em;
+          font-weight: bold;
+        }
+
+        .card-body {
+          padding: 1rem;
+        }
+
+        .card-text {
+          font-size: 0.95em;
+        }
+
+        h2 {
+          font-size: 2.5em;
+          font-weight: bold;
+          margin: 1.5rem 0;
+        }
+
+        .create-btn {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 1rem;
+        }
+
+        .btn {
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 1rem;
+        }
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          h2 {
+            font-size: 2em;
+          }
+
+          .container {
+            max-width: 100%;
+          }
+
+          .create-btn {
+            flex-direction: column;
+            margin-bottom: 15px;
+          }
+
+          .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          h2 {
+            font-size: 1.5em;
+          }
+
+          .btn {
+            font-size: 0.95em;
+          }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navigation -->
+<div th:insert="~{/template_general.html::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <!-- Page Heading -->
+    <h2 class="mt-5 mb-3 text-center">Bienvenido a RackMaster</h2>
+    <p class="mb-4">Esta aplicación está diseñada para gestionar de forma segura
+        y eficiente la infraestructura de centros de datos. Permite almacenar
+        información detallada sobre servidores físicos, máquinas virtuales,
+        clústeres, firewalls, routers y switches, además de registrar y proteger credenciales
+        asociadas a servidores y máquinas, garantizando altos estándares de
+        seguridad y organización.</p>
+
+    <div class="create-btn mb-4" sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')">
+        <a class="btn btn-primary mr-3" th:href="@{/rackmaster/clusters/a2/crear-cluster}">
+            Crear cluster</a>
+        <a class="btn btn-primary mr-3" th:href="@{/rackmaster/servidores/a2/crear-servidor}">
+            Crear servidor</a>
+        <a class="btn btn-primary mr-3" th:href="@{/rackmaster/maquinas-virtuales/a2/crear-maquina}" title="máquina virtual">
+            Crear máquina</a>
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Clusters</h4>
+                    <p class="card-text">Visualiza información detallada sobre los clústeres,
+                         servidores que los componen (nodos), el proyecto al que pertenecen
+                        y su ubicación dentro de la sede correspondiente.</p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{/rackmaster/clusters/a1}" class="btn btn-primary">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Servidores</h4>
+                    <p class="card-text">Visualiza información detallada sobre los servidores físicos,
+                        incluyendo su IP, sistema operativo, modelo, procesador, almacenamiento, memoria
+                        RAM, rack y ubicación en la sede. También muestra su estado de uso y relación con
+                        clústeres y máquinas virtuales asociadas</p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{/rackmaster/servidores/a1}" class="btn btn-primary">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Máquinas Virtuales</h4>
+                    <p class="card-text">Consulta información detallada de máquinas virtuales, como IP,
+                        sistema operativo, RAM asignada, almacenamiento, aplicación, servicio, y el
+                        proyecto al que pertenecen. También identifica el servidor físico asociado y su
+                        estado de uso.</p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{/rackmaster/maquinas-virtuales/a1}" class="btn btn-primary">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Firewalls</h4>
+                    <p class="card-text"><strong>Próximamente disponible:</strong> Consulta la configuración y estado de los dispositivos de seguridad
+                        perimetral que controlan el tráfico, filtran conexiones no autorizadas y protegen
+                        la infraestructura del datacenter.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary active">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Routers</h4>
+                    <p class="card-text"><strong>Próximamente disponible:</strong> Visualiza los dispositivos encargados de enrutar el tráfico entre
+                        redes, incluyendo configuraciones IP, protocolos de enrutamiento y su integración
+                        con la infraestructura.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary active">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Switchs</h4>
+                    <p class="card-text"><strong>Próximamente disponible:</strong> Accede a la información de los dispositivos que gestionan la
+                        conectividad interna del datacenter, como puertos, VLANs, y asignaciones físicas de red.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary active">Consultar</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div th:insert="~{template_general.html::footer}"></div>
+
+</body>
+
+</html>

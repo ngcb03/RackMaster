@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Información cluster</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        .create-btn {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 1rem;
+        }
+
+        .card-body {
+          padding: 1rem;
+        }
+
+        .form-inline {
+          flex: 0 0 60%;
+        }
+
+        .form-inline .form-control {
+          border-radius: 0.25rem;
+          padding: 0.75rem 1.5rem;
+          width: 80%;
+        }
+
+        h2 {
+          font-size: 2.5em;
+          font-weight: bold;
+          margin: 1.5rem 0;
+        }
+
+        .table-responsive {
+          margin-bottom: 1.5rem;
+        }
+
+        .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 1rem;
+          background-color: #fff;
+        }
+
+        .table th,
+        .table td {
+          text-align: left;
+          padding: 0.75rem;
+          border-top: 1px solid #dee2e6;
+        }
+
+        .table th {
+          font-weight: 700;
+          color: #495057;
+          background-color: #e9ecef;
+        }
+
+        .btns {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .btn {
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 3rem;
+        }
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed; /* Fijo en la pantalla */
+            z-index: 1000; /* Por encima de otros elementos */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ancho completo */
+            height: 100%; /* Alto completo */
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+        }
+
+        /* Fondo oscuro */
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        /* Contenido del modal */
+        .modal-content {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          width: 600px;
+          z-index: 1060;
+          position: relative;
+        }
+
+        .btn-close {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .modal-header, .modal-footer {
+            display: flex;
+            justify-content: space-between; /* Espacio entre los elementos */
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e0e0e0; /* Borde inferior */
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e0e0e0; /* Borde superior */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          h2 {
+            font-size: 2em;
+          }
+
+          .container {
+            max-width: 100%;
+          }
+
+          .table {
+            font-size: 0.9em;
+          }
+
+          .btns {
+            display: block;
+          }
+
+          .btn {
+            width: 100%;
+            font-size: .95em;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          h2 {
+            font-size: 1.5em;
+          }
+
+          .table {
+            font-size: 0.8em;
+          }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navigation -->
+<div th:insert="~{/template_general.html::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <h2 class="mb-4 text-center">Información del Cluster</h2>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/inicio}">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/clusters/a1}">Clusters</a></li>
+        <li class="breadcrumb-item active">Información cluster</li>
+    </ol>
+
+    <div class="card mb-5 shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0" th:text="${cluster.nombre}"></h2>
+        </div>
+
+        <input type="hidden" id="elemento_id" th:value="${cluster.cluster_id}"/>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Proyecto</h5>
+                        <p class="text-muted" th:text="${cluster.proyecto}"></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Sede</h5>
+                        <p class="text-muted" th:text="${cluster.sede}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">Almacenamiento total</h5>
+                        <p class="text-muted" th:text="${cluster.almacenamiento_total}"></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-3 mb-3">
+                        <h5 class="fw-bold">RAM total</h5>
+                        <p class="text-muted" th:text="${cluster.ram_total} + ' GB'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="fw-bold" th:text="'Total nodos' + '  (' + ${servidores.size() + ')'}"></h5>
+                    <ul class="list-unstyled">
+                        <li th:each="servidor : ${servidores}" class="text-muted">
+                            <a
+                                    th:text="${servidor.nombre}"
+                                    th:href="@{/rackmaster/servidores/a1/{servidor_id} (servidor_id=${servidor.servidor_id}) }"
+                                    target="_blank"
+                            ></a>
+                        </li>
+                        <li class="text-muted"></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="card shadow-sm p-3">
+                    <h5 class="fw-bold" th:text="'Total máquinas virtuales' + '  (' + ${maquinas.size()} + ')'"></h5>
+                    <ul class="list-unstyled">
+                        <li th:each="maquina : ${maquinas}" class="text-muted">
+                            <a
+                                    th:text="${maquina.nombre}"
+                                    th:href="@{/rackmaster/maquinas-virtuales/a1/{maquina_id} (maquina_id=${maquina.maquina_id}) }"
+                                    target="_blank"
+                            ></a>
+                        </li>
+                        <li class="text-muted"></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')" class="btns text-end mt-4">
+                <a class="btn btn-warning me-2"
+                   th:href="@{/rackmaster/clusters/a2/editar-cluster/{cluster_id} (cluster_id=${cluster.cluster_id})}">Modificar</a>
+                <a id="eliminar-cluster-btn" class="btn btn-danger"
+                   href="javascript:void(0);"
+                   th:onclick="openDeleteClusterModal([[${cluster.cluster_id}]])">
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /.container -->
+
+<!-- Modal para confirmar la eliminación del clúster -->
+<div id="deleteClusterModal" class="modal" style="display: none">
+    <div class="modal-backdrop"></div>
+    <!-- Fondo oscuro del modal -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" onclick="closeDeleteClusterModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro de que desea eliminar el clúster <strong th:text="${cluster.nombre}"></strong>?</p>
+            <div th:if="${!servidores.isEmpty}">
+                <p>Los siguientes servidores se desvincularán:</p>
+                <ul id="serverList">
+                    <li th:each="servidor : ${servidores}" th:text="${servidor.nombre}"></li>
+                </ul>
+            </div>
+            <p><strong>Nota:</strong> Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-around">
+            <button type="button" class="btn btn-danger" style="width: 240px" id="confirmDeleteButton">Eliminar Clúster</button>
+            <button type="button" class="btn btn-secondary" style="width: 240px" onclick="closeDeleteClusterModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fondo oscuro detrás del modal -->
+<div id="modalBackdrop" class="modal-backdrop" style="display: none"></div>
+
+<script>
+    let clusterIdToDelete; // Variable para almacenar el ID del clúster
+
+    function openDeleteClusterModal(clusterId) {
+        clusterIdToDelete = clusterId; // Guardar el ID del clúster a eliminar
+        document.getElementById('deleteClusterModal').style.display = 'block';
+    }
+
+    function closeDeleteClusterModal() {
+        document.getElementById('deleteClusterModal').style.display = 'none';
+    }
+
+    document.getElementById('confirmDeleteButton').onclick = function() {
+        // Cambiar la URL de eliminación según corresponda
+        window.location.href = '/rackmaster/clusters/a2/eliminar-cluster/' + clusterIdToDelete;
+    };
+</script>
+
+<!-- Footer -->
+<div th:insert="~{/template_general.html::footer}"></div>
+
+
+</body>
+
+</html>

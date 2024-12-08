@@ -1,0 +1,238 @@
+<div th:fragment="header">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/rackmaster/inicio}">RackMaster</a>
+
+            <!-- Toggler for mobile -->
+            <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/rackmaster/clusters/a1}">Clusters</a>
+                    </li>
+                    <li class="nav-item" title="Servidores físicos">
+                        <a class="nav-link" th:href="@{/rackmaster/servidores/a1}">Servidores</a>
+                    </li>
+                    <li class="nav-item" title="Máquinas virtuales">
+                        <a class="nav-link" th:href="@{/rackmaster/maquinas-virtuales/a1}">Máquinas</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${usuario_logeado}">
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <span sec:authorize="hasRole('ROLE_SUPER_ADMIN')">
+                                <a class="dropdown-item" th:href="@{/rackmaster/cuentas}">Cuentas</a>
+                            </span>
+                            <a class="dropdown-item" th:href="@{/rackmaster/cerrar-sesion}">Cerrar sesión</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- Search Clusters-->
+<div th:fragment="buscar_clusters">
+
+    <a th:if="${isFilter}" th:href="@{/rackmaster/clusters/a1}" class="btn btn-warning">Quitar filtros</a>
+
+    <input id="searchInput" class="form-control" type="search" placeholder="Término a buscar" aria-label="Search"
+           name="frase" required />
+
+    <select class="form-control mr-1" id="categoria" name="categoria" required>
+        <option value="TODO" selected>Todo</option>
+        <option value="NOMBRE">Nombre</option>
+        <option value="PROYECTO">Proyecto</option>
+        <option value="SEDE">Sede</option>
+    </select>
+    <button class="btn btn-primary my-2 my-sm-0" type="submit">
+        Buscar
+    </button>
+</div>
+
+
+<!-- Search Servidores-->
+<div th:fragment="buscar_servidores">
+
+    <a th:if="${isPageable}" th:href="@{/rackmaster/servidores/a1}" class="btn btn-warning">Quitar filtros</a>
+
+    <input id="searchInput" class="form-control" type="search" placeholder="Término a buscar" aria-label="Search"
+           name="frase" required />
+
+    <select class="form-control mr-1" id="categoria" name="categoria" required>
+        <option value="TODO" selected>Todo</option>
+        <option value="NOMBRE">Nombre</option>
+        <option value="IP">Ip</option>
+        <option value="MAC">Mac</option>
+        <option value="SISTEMA_OP">Sistema op</option>
+        <option value="MODELO">Modelo</option>
+        <option value="SERIAL">Serial</option>
+        <option value="PLACA">Placa</option>
+        <option value="RACK">Rack</option>
+        <option value="SEDE">Sede</option>
+        <optgroup label="Estado">
+            <option value="EN_USO">En uso</option>
+            <option value="DISPONIBLE">Disponibles</option>
+        </optgroup>
+    </select>
+
+    <button class="btn btn-primary my-2 my-sm-0" type="submit">
+        Buscar
+    </button>
+</div>
+
+<!-- Search Máquinas -->
+<div th:fragment="buscar_maquinas">
+
+    <a th:if="${isPageable}" th:href="@{/rackmaster/maquinas-virtuales/a1}" class="btn btn-warning">Quitar filtros</a>
+
+    <input id="searchInput" class="form-control" type="search" placeholder="Término a buscar" aria-label="Search"
+           name="frase" required />
+
+    <select class="form-control mr-1" id="categoria" name="categoria" required>
+        <option value="TODO" selected>Todo</option>
+        <option value="NOMBRE">Nombre</option>
+        <option value="NOMBRE_EN_HIPERVISOR">Nombre en hipervisor</option>
+        <option value="ID_EN_HIPERVISOR">Id en hipervisor</option>
+        <option value="IP">Ip</option>
+        <option value="MAC">Mac</option>
+        <option value="SISTEMA_OP">Sistema operativo</option>
+        <option value="PROYECTO">Proyecto</option>
+        <option value="APLICACION">Aplicacion</option>
+        <option value="SERVICIO">Servicio</option>
+        <option value="SEDE">Sede</option>
+        <optgroup label="Estado">
+            <option value="ENCENDIDAS">Encendidas</option>
+            <option value="APAGADAS">Apagadas</option>
+        </optgroup>
+    </select>
+
+    <button class="btn btn-primary my-2 my-sm-0" type="submit">
+        Buscar
+    </button>
+</div>
+
+
+<!-- Search Cuentas -->
+<div th:fragment="buscar_cuentas">
+
+    <a th:if="${isPageable}" th:href="@{/rackmaster/cuentas}" class="btn btn-warning">Quitar filtros</a>
+
+    <input id="searchInput" class="form-control" type="search" placeholder="Término a buscar" aria-label="Search"
+           name="frase" required />
+
+    <select class="form-control mr-1" id="categoria" name="categoria" required>
+        <option value="TODO" selected>Todo</option>
+        <option value="NOMBRE">Nombre completo</option>
+        <option value="USUARIO">Usuario</option>
+        <optgroup label="Cargo">
+            <option value="CAT_JEFE">Jefe</option>
+            <option value="CAT_LIDER">Líder</option>
+            <option value="CAT_ANALISTA">Analista</option>
+            <option value="CAT_OPERADOR">Operador</option>
+            <option value="CAT_OTRO">Otro</option>
+        </optgroup>
+        <optgroup label="Rol">
+            <option value="CAT_SUPER_ADMIN">Super administrador</option>
+            <option value="CAT_ADMIN">Administrador</option>
+            <option value="CAT_USER">Usuario común</option>
+        </optgroup>
+        <optgroup label="Estado">
+            <option value="HABILITADO">Habilitado</option>
+            <option value="DESHABILITADO">Deshabilitado</option>
+        </optgroup>
+    </select>
+
+    <button class="btn btn-primary my-2 my-sm-0" type="submit">
+        Buscar
+    </button>
+</div>
+
+<div th:fragment="conf_eliminar_credencial">
+    <!-- Modal para confirmar la eliminación de la credencial -->
+    <div id="deleteCredencialModal" class="modal" style="display: none">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content" style="width: 400px; height: 340px;">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" onclick="closeDeleteCredencialModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro de que desea eliminar esta credencial?</p>
+                <p><strong>Nota:</strong> Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+                <button type="button" class="btn btn-danger" style="width: 160px" onclick="confirmDeleteCredencial()">Eliminar</button>
+                <button type="button" class="btn btn-secondary" style="width: 160px" onclick="closeDeleteCredencialModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deleteLink; // Variable para almacenar el enlace original
+
+        function openDeleteCredencialModal(event) {
+            event.preventDefault(); // Evita la redirección inmediata
+            deleteLink = event.currentTarget; // Guarda el enlace para usarlo después
+            document.getElementById("deleteCredencialModal").style.display = "block"; // Muestra el modal
+        }
+
+        function closeDeleteCredencialModal() {
+            document.getElementById("deleteCredencialModal").style.display = "none";
+        }
+
+        function confirmDeleteCredencial() {
+            if (deleteLink) {
+                window.location.href = deleteLink.href; // Redirige a la URL original del enlace
+            }
+        }
+    </script>
+</div>
+
+<!-- Footer -->
+<div th:fragment="footer">
+    <footer>
+        <div class="footer-container">
+            <div class="contacto">
+                <h3>Contactos soporte</h3>
+                <ul>
+                    <li>Acceso usuarios: <a
+                            href="mailto:soporteusuarios@mail.com?subject=Consulta&body=Hola, necesito ayuda con...">soporteusuarios@mail.com</a>
+                    </li>
+                    <li>Aplicación: <a
+                            href="mailto:ngcamargob@gmail.com.co?subject=Consulta&body=Hola, necesito ayuda con...">ngcamargob@hotmail.com</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="otras-plataformas">
+                <h3>Plataformas corporativas</h3>
+                <ul>
+                    <li><a href="#" target="_blank">Plataforma CMDB</a></li>
+                    <li><a href="#" target="_blank">Correo Interno</a></li>
+                    <li><a href="https://www.office.com/" target="_blank">Microsoft 365</a></li>
+                </ul>
+            </div>
+            <div class="derechos-reservados">
+                <p>Derechos reservados &copy; 2024</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</div>

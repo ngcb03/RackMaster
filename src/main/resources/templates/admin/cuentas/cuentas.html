@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Editar cuenta</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        h2 {
+          font-size: 2.5em;
+          font-weight: bold;
+          margin: 1.5rem 0;
+        }
+
+        .card-body {
+          padding: 0 0.75rem;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+          margin-bottom: 1.5rem;
+        }
+
+        .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 1rem;
+          background-color: #fff;
+        }
+
+        .table th,
+        .table td {
+          text-align: left;
+          padding: 0.75rem;
+          border-top: 1px solid #dee2e6;
+        }
+
+        .table th {
+          font-weight: 700;
+          color: #495057;
+          background-color: #e9ecef;
+        }
+
+        .btn {
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 1rem;
+        }
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed; /* Fijo en la pantalla */
+            z-index: 1000; /* Por encima de otros elementos */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ancho completo */
+            height: 100%; /* Alto completo */
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+        }
+
+        /* Fondo oscuro */
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 1040;
+        }
+
+        .modal-content {
+            background-color: #fefefe; /* Fondo blanco para el contenido */
+            margin: 15% auto; /* Centramos el modal */
+            padding: 20px; /* Espaciado interno */
+            border: 1px solid #888; /* Borde alrededor del contenido */
+            width: 600px; /* Ancho del modal */
+            z-index: 1060;
+        }
+
+        .btn-close {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .modal-header, .modal-footer {
+            display: flex;
+            justify-content: space-between; /* Espacio entre los elementos */
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e0e0e0; /* Borde inferior */
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e0e0e0; /* Borde superior */
+        }
+
+        .create-btn {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 2rem auto 2rem;
+          flex-wrap: wrap;
+        }
+
+        .create-btn form {
+          display: flex;
+          justify-content: end;
+          flex-grow: 1;
+          max-width: 700px;
+        }
+
+        .create-btn input {
+          flex-grow: 1;
+          border-radius: 0.25rem;
+          padding: 0.75rem 1.5rem;
+          margin-right: 0.5rem;
+        }
+
+        .create-btn .btn {
+          white-space: nowrap;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          h2 {
+            font-size: 2em;
+          }
+
+          .container {
+            max-width: 100%;
+          }
+
+          .table {
+            font-size: 0.9em;
+          }
+          .create-btn {
+            flex-direction: column;
+            margin-bottom: 0;
+          }
+
+          .create-btn form {
+            width: 100%;
+            margin-bottom: 1rem;
+          }
+
+          .create-btn input {
+            margin-right: 0;
+            width: 100%;
+          }
+
+
+          .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          h2 {
+            font-size: 1.5em;
+          }
+
+          .table {
+            font-size: 0.8em;
+          }
+
+          .btn {
+            font-size: 0.8em;
+          }
+        }
+    </style>
+</head>
+
+<body>
+<div th:insert="~{/template_general::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <h2 class="mt-3 mb-3 text-center">Administrar Cuentas</h2>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/inicio}">Inicio</a></li>
+        <li class="breadcrumb-item active">Administrar Cuentas</li>
+    </ol>
+
+    <div class="create-btn">
+        <div>
+            <a class="btn btn-primary" th:href="@{/rackmaster/cuentas/crear-cuenta}">
+                Crear cuenta</a>
+        </div>
+        <form class="form-inline" method="get" th:action="@{/rackmaster/cuentas/buscar}">
+            <div th:insert="~{/template_general.html::buscar_cuentas}"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("categoria").addEventListener("change", function () {
+          var searchInput = document.getElementById("searchInput");
+          var selectedOption = this.value;
+
+          if (selectedOption.startsWith("CAT_") ||
+            selectedOption === "HABILITADO" ||
+            selectedOption === "DESHABILITADO") {
+            searchInput.value = '';
+            searchInput.disabled = true;
+          } else {
+            searchInput.disabled = false;
+          }
+        });
+    </script>
+
+    <div th:if="${!cuentas.isEmpty() and isPageable}" class="text-right mb-2" th:text="'🌪️ Cuentas filtradas: ' + ${cuentas_filtro} + ' 🌪️'"></div>
+
+    <!-- Orders Table -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive mb-1">
+                <table class="table table-striped table-hover table-bordered align-middle">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Cargo</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acción</th>
+                        <th scope="col">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${!cuentas.isEmpty()}" th:each="cuenta:${cuentas}">
+                        <td th:text="${cuenta.nombre_completo}"></td>
+                        <td th:text="${cuenta.usuario}"></td>
+                        <td th:text="
+                                ${cuenta.cargo == 'JEFE' ? 'Jefe TI'
+                                : cuenta.cargo == 'LIDER' ? 'Líder TI'
+                                : cuenta.cargo == 'ANALISTA' ? 'Analista TI'
+                                : cuenta.cargo == 'OPERADOR' ? 'Operador Data TI'
+                                : cuenta.cargo == 'OTRO' ? 'Otro'
+                                : cuenta.cargo}"></td>
+                        <td th:text="
+                                ${cuenta.rol == 'SUPER_ADMIN' ? 'Administrador general'
+                                : cuenta.rol == 'ADMIN' ? 'Administrador infraestructura'
+                                : cuenta.rol == 'USER' ? 'Usuario común'
+                                : cuenta.rol}"></td>
+                        <td>
+                            <a th:if="${cuenta.habilitado == false}" class="btn btn-success"
+                               th:href="@{/rackmaster/cuentas/bloqueo-cuenta/{cuenta_id}/habilitar (cuenta_id=${cuenta.cuenta_id})}">
+                                Habilitar
+                            </a>
+                            <a th:if="${cuenta.habilitado == true}" class="btn btn-warning"
+                               th:href="@{/rackmaster/cuentas/bloqueo-cuenta/{cuenta_id}/deshabilitar (cuenta_id=${cuenta.cuenta_id})}">
+                                Deshabilitar
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-warning"
+                               th:href="@{/rackmaster/cuentas/editar-cuenta/{cuenta_id} (cuenta_id=${cuenta.cuenta_id}) }">
+                                Modificar
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" th:href="@{/rackmaster/cuentas/eliminar-cuenta/{cuenta_id} (cuenta_id=${cuenta.cuenta_id}) }"
+                               onclick="openDeleteCuentaModal(event)">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${cuentas.isEmpty()}">
+                        <td colspan="7" class="text-center">¡No hay cuentas disponibles!</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${!cuentas.isEmpty()}" class="mb-3 text-right" th:text="'🧮 Total cuentas registradas: ' + ${cuentas.size()} + ' 🧮'"></div>
+
+        </div>
+    </div>
+
+    <!-- Pagination Don't Pageable -->
+    <div th:if="${!cuentas.isEmpty() and !isPageable}" class="pagination-container text-center mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas (page=${currentPage - 1})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas (page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas (page=${currentPage + 1})}">Siguiente</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Pagination Pageable -->
+    <div th:if="${!cuentas.isEmpty() and isPageable}" class="pagination-container text-center mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas/buscar?categoria=@ (page=${currentPage - 1})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas/buscar?categoria=@ (page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/rackmaster/cuentas/buscar?categoria=@ (page=${currentPage + 1})}">Siguiente</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- Modal para confirmar la eliminación de la cuenta -->
+<div id="deleteCuentaModal" class="modal" style="display: none">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content" style="width: 500px;">
+        <div class="modal-header">
+            <h5 class="modal-title">Confirmar Eliminación</h5>
+            <button type="button" class="btn-close" onclick="closeDeleteCuentaModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro de que desea eliminar esta cuenta?</p>
+            <p><strong>Nota:</strong> Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-danger" style="width: 210px;" onclick="confirmDeleteCuenta()">Eliminar</button>
+            <button type="button" class="btn btn-secondary" style="width: 210px;" onclick="closeDeleteCuentaModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fondo oscuro detrás del modal -->
+<div id="modalBackdrop" class="modal-backdrop" style="display: none"></div>
+
+<script>
+    let deleteLink; // Variable para almacenar el enlace original
+
+    function openDeleteCuentaModal(event) {
+        event.preventDefault(); // Evita la redirección inmediata
+        deleteLink = event.currentTarget; // Guarda el enlace para usarlo después
+        document.getElementById("deleteCuentaModal").style.display = "block"; // Muestra el modal
+    }
+
+    function closeDeleteCuentaModal() {
+        document.getElementById("deleteCuentaModal").style.display = "none";
+    }
+
+    function confirmDeleteCuenta() {
+        if (deleteLink) {
+            window.location.href = deleteLink.href; // Redirige a la URL original del enlace
+        }
+    }
+</script>
+
+<!-- Footer -->
+<div th:insert="~{/template_general.html::footer}"></div>
+
+</body>
+
+</html>

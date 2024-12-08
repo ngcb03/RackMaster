@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Crear máquina virtual</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        .registro-container {
+          max-width: 820px;
+          margin: 30px auto 50px;
+        }
+
+        .registro-container .btn {
+          width: 100%;
+        }
+
+        .step {
+          display: none;
+        }
+
+        .step.active-step {
+          display: block;
+        }
+
+        .step-buttons {
+          margin-top: 20px;
+        }
+
+        .step-buttons button {
+          margin-right: 10px;
+        }
+
+        #lista-servidores {
+          position: absolute;
+          width: 270px;
+          z-index: 1000;
+          max-height: 150px;
+          overflow-y: scroll;
+          border: 1px solid #ccc;
+          border-radius: 0.25rem;
+          background-color: #fff;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-group-item {
+          cursor: pointer;
+          padding: 10px;
+          transition: background-color 0.2s;
+        }
+
+        .list-group-item:hover {
+          background-color: #f1f1f1;
+        }
+
+        .list-group-item:first-child {
+          border-top-left-radius: 0.25rem;
+          border-top-right-radius: 0.25rem;
+        }
+
+        .list-group-item:last-child {
+          border-bottom-left-radius: 0.25rem;
+          border-bottom-right-radius: 0.25rem;
+        }
+
+        .form-column {
+          display: inline-block;
+          width: 48%;
+          vertical-align: top;
+          padding: 10px;
+        }
+
+        .form-column:last-child {
+          margin-left: 3%;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .btns {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 2rem;
+        }
+
+        .btn {
+          width: 240px;
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 3rem;
+        }
+
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          .form-column {
+            width: 100%;
+            display: block;
+            margin-left: 0;
+          }
+
+          .registro-container {
+            max-width: 340px;
+          }
+
+          .form-column:last-child {
+            margin: 0;
+          }
+
+          .btns {
+            display: block;
+          }
+
+          .btn {
+            width: 100%;
+            font-size: .95em;
+            margin-bottom: 0.5rem;
+          }
+
+        }
+
+        @media (max-width: 400px) {
+
+          body nav,
+          body .container,
+          body footer {
+            min-width: 300px !important;
+            max-width: 400px !important;
+          }
+
+          .registro-container {
+            max-width: 320px !important;
+          }
+
+          .btn {
+            font-size: 0.95em;
+          }
+
+        }
+    </style>
+
+</head>
+
+<body>
+<!-- Navigation -->
+<div th:insert="~{/template_general.html::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-body text-center">
+            <h2>Registrar máquinas virtuales</h2>
+        </div>
+    </div>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/inicio}">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/maquinas-virtuales/a1}">Máquinas virtuales</a></li>
+        <li class="breadcrumb-item active">Registrar máquina</li>
+    </ol>
+
+    <form th:action="@{/rackmaster/maquinas-virtuales/a2/guardar-maquina}" method="post" id="multiStepForm"
+          class="registro-container" onsubmit="return validatePassword()">
+
+        <!-- Paso 1 -->
+        <div class="step active-step">
+            <div class="form-column">
+
+                <div class="form-group">
+                    <label for="en_uso">Estado actual:</label>
+                    <select class="form-control" id="en_uso" name="en_uso" required>
+                        <option value="true" th:selected="${maquina_aux != null and maquina_aux.en_uso == true}">Encendida</option>
+                        <option value="false" th:selected="${maquina_aux != null and maquina_aux.en_uso == false}">Apagada</option>
+                    </select>
+                </div>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('NOMBRE_MAQUINA')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe una máquina virtual con ese nombre!
+                </p>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('NOMBRE_SERVIDOR')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe un servidor con ese nombre!
+                </p>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('NOMBRE_CLUSTER')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe un cluster con ese nombre!
+                </p>
+
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" maxlength="160"
+                           autocomplete="false" required placeholder="Ingrese nombre máquina virtual"
+                           th:value="${maquina_aux != null ? maquina_aux.nombre : ''}" />
+                </div>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('IP_MAQUINA')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe una máquina virtual con esa IP!
+                </p>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('IP_SERVIDOR')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe un servidor con esa IP!
+                </p>
+
+                <div class="form-group">
+                    <label for="ip">IP:</label>
+                    <input type="text" class="form-control" id="ip" name="ip" maxlength="160" autocomplete="false"
+                           required placeholder="ej. 192.168.10.24"
+                           th:value="${maquina_aux != null ? maquina_aux.ip : ''}" />
+                </div>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('MAC_MAQUINA')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe una máquina virtual con esa MAC!
+                </p>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('MAC_SERVIDOR')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe un servidor con esa MAC!
+                </p>
+
+                <div class="form-group">
+                    <label for="mac">Dirección MAC:</label>
+                    <input type="text" class="form-control" id="mac" name="mac" maxlength="17"
+                           autocomplete="false" placeholder="ej. AA:BB:CC:DD:EE:FF o AA-BB-CC-DD-EE-FF"
+                           th:value="${maquina_aux != null ? maquina_aux.mac : ''}" />
+                </div>
+
+            </div>
+
+            <div class="form-column">
+
+                <div class="form-group">
+                    <label for="sistema_op">Sistema operativo + Version:</label>
+                    <input type="text" class="form-control" id="sistema_op" name="sistema_op" maxlength="160"
+                           placeholder="ej: Debian 12.1" th:value="${maquina_aux != null ? maquina_aux.sistema_op : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="hipervisor_asignar">Hipervisor (Servidor físico):</label>
+                    <input type="text" class="form-control" id="hipervisor_asignar" name="hipervisor_asignar"
+                           th:value="${maquina_aux.servidor != null ? maquina_aux.servidor.nombre : ''}"
+                           placeholder="Escriba el nombre del hipervisor" onkeyup="buscarServidorConDebounce(this.value)"
+                           autocomplete="off" required />
+                    <input type="hidden" id="hipervisor_id" name="hipervisor_id"
+                           th:value="${maquina_aux.servidor != null ? maquina_aux.servidor.servidor_id : ''}">
+                    <ul id="lista-servidores" class="list-group"></ul>
+                </div>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('NOMBRE_EN_HIPERVISOR')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe una máquina virtual con ese nombre en el hipervisor!
+                </p>
+
+                <div class="form-group">
+                    <label for="nombre_en_hipervisor">Nombre en hipervisor (servidor):</label>
+                    <input type="text" class="form-control" id="nombre_en_hipervisor" name="nombre_en_hipervisor"
+                           maxlength="160" autocomplete="false" required placeholder="Nombre de la máquina en hipervisor"
+                           th:value="${maquina_aux != null ? maquina_aux.nombre_en_hipervisor : ''}" />
+                </div>
+
+                <p th:if="${!datos_duplicados.isEmpty() and datos_duplicados.contains('ID_EN_HIPERVISOR')}" class="mt-4 mb-3"
+                   style="color: red;">
+                    ¡Ya existe una máquina virtual con ese ID en el hipervisor!
+                </p>
+
+                <div class="form-group">
+                    <label for="id_en_hipervisor">ID en hipervisor (servidor):</label>
+                    <input type="number" class="form-control" id="id_en_hipervisor" name="id_en_hipervisor" min="0"
+                           max="1000000000" autocomplete="false" required placeholder="Ingrese ID de la máquina en hipervisor"
+                           th:value="${maquina_aux != null ? maquina_aux.id_en_hipervisor : ''}" />
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Paso 2 -->
+        <div class="step">
+            <div class="form-column">
+
+                <div class="form-group">
+                    <label for="proyecto">Proyecto:</label>
+                    <input type="text" class="form-control" id="proyecto" name="proyecto" maxlength="160"
+                           placeholder="Nombre del proyecto " th:value="${maquina_aux != null ? maquina_aux.proyecto : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="servicio">Servicio:</label>
+                    <input type="text" class="form-control" id="servicio" name="servicio" maxlength="160"
+                           placeholder="ej: Servidor DB"
+                           th:value="${maquina_aux != null ? maquina_aux.servicio : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="aplicacion">Aplicación + versión:</label>
+                    <input type="text" class="form-control" id="aplicacion" name="aplicacion" maxlength="160"
+                           placeholder="ej: docker 26.3.1" th:value="${maquina_aux != null ? maquina_aux.aplicacion : ''}" />
+                </div>
+
+            </div>
+
+            <div class="form-column">
+
+                <div class="form-group">
+                    <label for="procesador_asig">Procesador asignado:</label>
+                    <input type="text" class="form-control" id="procesador_asig" name="procesador_asig"
+                           maxlength="160" placeholder="ej: 2 sockets x 3 cores"
+                           th:value="${maquina_aux != null ? maquina_aux.procesador_asig : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="almacenamiento_asig">Almacenamiento asignado:</label>
+                    <input type="text" class="form-control" id="almacenamiento_asig" name="almacenamiento_asig"
+                           maxlength="160" placeholder="ej: 1 x 120GB + 2 x 200GB"
+                           title="discos virtuales asignados desde hypervisor"
+                           th:value="${maquina_aux != null ? maquina_aux.almacenamiento_asig : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="almacenamiento_total">Almacenamiento total (GB):</label>
+                    <input type="number" class="form-control" id="almacenamiento_total" name="almacenamiento_total" min="0"
+                           maxlength="1000000000" placeholder="ej: si discos 2x300GB colocar 600"
+                           title="¡COLOCAR 0 SI NO TIENE LA INFORMACION!" required
+                           th:value="${maquina_aux != null ? maquina_aux.almacenamiento_total : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ram_asig">RAM asignada (GB):</label>
+                    <input type="number" class="form-control" id="ram_asig" name="ram_asig" min="0" max="1000000000"
+                           placeholder="Ingrese cantidad RAM en GB" title="¡COLOCAR 0 SI NO TIENE LA INFORMACION!"
+                           required th:value="${maquina_aux != null ? maquina_aux.ram_asig : ''}" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step">
+            <div class="form-column">
+
+                <div class="form-group">
+                    <label for="usuario">Nombre usuario principal:</label>
+                    <input type="text" class="form-control" id="usuario" name="usuario" maxlength="160" required
+                           placeholder="ej: root o administrador" th:value="${maquina_aux != null ? maquina_aux.usuario : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="puerto">Puerto servidor:</label>
+                    <input type="number" class="form-control" id="puerto" name="puerto" min="1" maxlength="65535" required
+                           placeholder="ej: 22 o 3389 (según sistema operativo)" title="¡SI SERVIDOR NO TIENE PUERTO COLOCAR 0!"
+                           th:value="${maquina_aux != null ? maquina_aux.puerto : ''}" />
+                </div>
+            </div>
+
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="contrasenia">Contraseña usuario principal:</label>
+                    <input type="password" class="form-control" id="contrasenia" name="contrasenia" minlength="8"
+                           maxlength="260" required placeholder="Ingrese contraseña segura"
+                           th:value="${maquina_aux != null ? maquina_aux.contrasenia : ''}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="contrasenia_conf">Confirmar contraseña principal:</label>
+                    <input type="password" class="form-control" id="contrasenia_conf" name="contrasenia_conf" minlength="8"
+                           maxlength="260" required placeholder="Ingrese nuevamente la contraseña"
+                           th:value="${maquina_aux != null ? maquina_aux.contrasenia : ''}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="btns">
+            <button type="button" id="prevBtn" class="btn btn-warning" onclick="nextStep(-1)">Anterior</button>
+            <button type="button" id="nextBtn" class="btn btn-success" onclick="nextStep(1)">Siguiente</button>
+        </div>
+    </form>
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+<div th:insert="~{/template_general.html::footer}"></div>
+
+<!-- Script para buscar los servidores -->
+<script th:src="@{/js/buscar_servidores.js}"></script>
+
+<!-- Script para form steps -->
+<script th:src="@{/js/form_steps.js}"></script>
+
+<!-- Script para form steps -->
+<script th:src="@{/js/gestion_pass.js}"></script>
+
+</body>
+</html>

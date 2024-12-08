@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+    <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+    <title>RackMaster - Crear cuenta</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <style>
+
+        /* Container Styles */
+        .container {
+          margin-top: 0 auto;
+        }
+
+        .breadcrumb-item a {
+          color: #007bff;
+        }
+
+        .breadcrumb-item.active {
+          color: #6c757d;
+        }
+
+        .card {
+          margin-bottom: 20px;
+        }
+
+        /* Form Styles */
+        form {
+          max-width: 560px;
+          margin: 30px auto;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .btns {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 2rem;
+        }
+
+        .btn {
+          width: 240px;
+          margin: 0.2rem;
+          border-radius: 0.25rem;
+          padding: 0.5rem 3rem;
+        }
+
+        .dropdown-menu {
+          background-color: #343a40;
+        }
+
+        .dropdown-item {
+          color: #fff;
+        }
+
+        footer {
+          background-color: #343a40;
+          color: white;
+          padding: 20px;
+        }
+
+        .footer-container {
+          max-width: 1140px;
+          margin: 0 auto;
+          text-align: left;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .contacto,
+        .otras-plataformas,
+        .derechos-reservados {
+          flex: 1 1 auto;
+          max-width: 500px;
+        }
+
+        .contacto h3,
+        .otras-plataformas h3 {
+          margin-bottom: 10px;
+        }
+
+        .contacto ul,
+        .otras-plataformas ul {
+          list-style-type: none;
+          padding: 0;
+        }
+
+        .contacto ul li,
+        .otras-plataformas ul li {
+          margin-bottom: 5px;
+        }
+
+        .contacto ul li a,
+        .otras-plataformas ul li a {
+          color: white;
+          text-decoration: none;
+        }
+
+        .contacto ul li a:hover,
+        .otras-plataformas ul li a:hover {
+          text-decoration: underline;
+        }
+
+        .derechos-reservados {
+          text-align: right;
+        }
+
+        @media (max-width: 768px) {
+          html {
+            min-width: 320px;
+          }
+
+          form {
+            max-width: 100%;
+          }
+
+          .btns {
+            display: block;
+          }
+
+          .btn {
+            width: 100%;
+            font-size: .95em;
+            margin-bottom: 0.5rem;
+          }
+
+        }
+
+        @media (max-width: 400px) {
+          .container {
+            padding: 0 15px;
+          }
+
+          .btn {
+            font-size: 0.95em;
+          }
+
+        }
+    </style>
+
+</head>
+
+<body>
+<!-- Navigation -->
+<div th:insert="~{/template_general.html::header}"></div>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-body text-center">
+            <h2>Crear una cuenta</h2>
+        </div>
+    </div>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/inicio}">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/rackmaster/cuentas}">Cuentas</a></li>
+        <li class="breadcrumb-item active">Crear una cuenta</li>
+    </ol>
+
+    <form class="form-horizontal" th:action="@{/rackmaster/cuentas/guardar-cuenta}" method="post"
+          onsubmit="return validatePassword()">
+
+        <div th:if="${datos_duplicados != null and datos_duplicados.contains('NOMBRE_COMP')}" class="col-sm-12 mt-3 mb-4">
+            <p style="color: red;">¡Nombre para usuario ya existe, ingrese uno distinto!</p>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="nombre_completo">Nombre completo:</label>
+            <div class="col-sm-12">
+                <input type="text" class="form-control" id="nombre_completo" name="nombre_completo"
+                       placeholder="Ingrese el nombre completo" maxlength="160"
+                       autocomplete="off" required th:value="${cuenta_aux != null ? cuenta_aux.nombre_completo : ''}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="cargo">Cargo:</label>
+            <div class="col-sm-12">
+                <select class="form-control" id="cargo" name="cargo" required>
+                    <option value="JEFE">Jefe TI</option>
+                    <option value="LIDER">Líder TI</option>
+                    <option value="ANALISTA">Analista TI</option>
+                    <option value="OPERADOR">Operador Data TI</option>
+                    <option value="OTRO">Otro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="rol">Rol (nivel de permisos):</label>
+            <div class="col-sm-12">
+                <select class="form-control" id="rol" name="rol" required>
+                    <option value="SUPER_ADMIN" title="Ver, editar, modificar y eliminar: usuarios e infraestructura registrada">Administrador general</option>
+                    <option value="ADMIN" title="Ver, editar, modificar y eliminar: infraestructura registrada">Administrador infraestructura</option>
+                    <option value="USER" title="Ver: infraestructura registrada">Usuario normal</option>
+                </select>
+            </div>
+        </div>
+
+        <div th:if="${datos_duplicados != null and datos_duplicados.contains('USUARIO')}" class="col-sm-12 mt-3 mb-4">
+            <p style="color: red;">¡Usuario ya existe, ingrese uno distinto!</p>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="usuario">Nombre de usuario:</label>
+            <div class="col-sm-12">
+                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingrese nombre de usuario"
+                       maxlength="160" autocomplete="off" required th:value="${cuenta_aux != null ? cuenta_aux.usuario : ''}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="contrasenia">Contraseña:</label>
+            <div class="col-sm-12">
+                <input type="password" class="form-control" id="contrasenia" name="contrasenia"
+                       required minlength="8" maxlength="260"
+                       placeholder="Ingrese una contraseña segura" autocomplete="off"
+                       th:value="${cuenta_aux != null ? cuenta_aux.contrasenia : ''}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6" for="contrasenia_conf">Confirmar contraseña:</label>
+            <div class="col-sm-12">
+                <input type="password" class="form-control" id="contrasenia_conf" name="contrasenia_conf"
+                       required minlength="8" maxlength="260"
+                       placeholder="Ingrese la contraseña nuevamente" autocomplete="off"
+                       th:value="${cuenta_aux != null ? cuenta_aux.contrasenia : ''}"/>
+            </div>
+        </div>
+
+        <div class="form-group mt-4 mb-5">
+            <div class="col-sm-12 btns">
+                <a class="btn btn-warning me-2" th:href="@{/rackmaster/cuentas}">
+                    Cancelar</a>
+                <button type="submit" class="btn btn-success">
+                    Crear cuenta
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+<div th:insert="~{/template_general.html::footer}"></div>
+
+<!-- Script para validar las contraseñas -->
+<script th:src="@{/js/gestion_pass.js}"></script>
+
+</body>
+
+</html>

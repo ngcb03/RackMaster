@@ -1,0 +1,14 @@
+# Normaliza los archivos de texto
+* text=auto
+
+# Mantén los archivos binarios tal como están
+*.jpg binary
+*.png binary
+
+# Archivos específicos con LF
+*.sh eol=lf
+*.yml eol=lf
+*.properties eol=lf
+
+# Archivos con CRLF
+*.bat eol=crlf
