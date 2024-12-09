@@ -336,21 +336,12 @@ public class ServidoresControl {
 
     @GetMapping("/a2/eliminar-servidor/{servidor_id}")
     public String eliminarServidor(@PathVariable Integer servidor_id) {
-        LOGGER.info("Id de servidor a eliminar {}", servidor_id);
-
         EntidadServidor servidor = servServidor.buscarServidor(servidor_id);
         if(servidor != null) {
 
-            // removemos máquinas virtuales asociadas
+            // obtenemos máquinas virtuales asociadas a remover
             List<EntidadMaquina> maquinas = servidor.getMaquinas();
             for(EntidadMaquina maquina: maquinas) {
-
-                // buscamos credenciales
-                List<EntidadCredencial> credenciales = servCredencial.traerCredencialesMaquina(maquina);
-                if(!credenciales.isEmpty()) {
-                    // removemos asociación credencial y guardamos en db
-                    credenciales.forEach(c -> servCredencial.eliminarCredencial(c.getCredencial_id()));
-                }
 
                 // eliminamos máquina db
                 servMaquina.eliminarMaquina(maquina.getMaquina_id());

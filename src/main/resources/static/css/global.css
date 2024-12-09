@@ -6,9 +6,7 @@ body {
     }
 
     .container {
-      min-width: 1200px;
-      width: 1260px;
-      max-width: 1300px;
+      width: 100%;
     }
 
     .navbar {

@@ -244,11 +244,11 @@ public class ServMaquinaImpl implements IServMaquina {
 
                 // removemos asociación credencial y guardamos en db
                 credenciales.forEach(c -> servCredencial.eliminarCredencial(c.getCredencial_id()));
-
-                // eliminamos máquina db
-                repoMaquina.deleteById(maquina_id);
-
             }
+
+            // eliminamos máquina db
+            repoMaquina.deleteById(maquina_id);
+
         }
 
     }
