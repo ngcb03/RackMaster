@@ -1,6 +1,6 @@
 # RackMaster
 
-**RackMaster** es una aplicación de software diseñada para gestionar la infraestructura de centros de datos (DataCenters). Permite documentar y organizar servidores, máquinas virtuales, clústeres, switches, y almacenar de manera segura las credenciales asociadas a estos recursos. Su objetivo es garantizar eficiencia operativa, seguridad y facilidad en la administración de recursos tecnológicos.
+**RackMaster** es una aplicación de software diseñada para gestionar la infraestructura de centros de datos (DataCenters). Permite documentar y organizar clústeres, servidores, máquinas virtuales, firewalls, routers y switches, e igualmente almacenar de manera segura las credenciales asociadas a estos recursos. Su objetivo es garantizar eficiencia operativa, seguridad y facilidad en la administración de recursos tecnológicos.
 
 ---
 
