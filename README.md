@@ -38,13 +38,46 @@
 
 ---
 
-## Características
+## Características Implementadas
 
-- **Gestión de servidores**: Administra y documenta los servidores físicos y virtuales de tu infraestructura.
-- **Gestión de máquinas virtuales (VMs)**: Almacena información detallada sobre las máquinas virtuales, incluyendo su configuración y estado.
-- **Gestión de clústeres**: Organiza y supervisa clústeres de servidores y máquinas virtuales.
-- **Almacenamiento seguro de credenciales**: Guarda de forma segura las credenciales de acceso a los servidores y máquinas virtuales.
-- **Interfaz intuitiva**: Una interfaz fácil de usar para facilitar la administración de todos los recursos en un solo lugar.
+### Clústeres
+- Visualiza información detallada sobre los clústeres, incluyendo:
+  - Servidores que los componen (nodos).
+  - El proyecto al que pertenecen.
+  - Su ubicación dentro de la sede correspondiente.
+
+### Servidores
+- Detalla información clave de los servidores físicos, como:
+  - Dirección IP, sistema operativo, modelo, procesador, almacenamiento y memoria RAM.
+  - Ubicación física en el rack y en la sede correspondiente.
+  - Estado de uso y relación con clústeres y máquinas virtuales asociadas.
+
+### Máquinas Virtuales
+- Muestra datos detallados de las máquinas virtuales, incluyendo:
+  - Dirección IP, sistema operativo, RAM asignada, almacenamiento y aplicaciones/servicios.
+  - El proyecto al que pertenecen y el servidor físico asociado.
+  - Estado de uso actual.
+
+### Credenciales
+- Almacenamiento seguro de las credenciales relacionadas con servidores y máquinas virtuales.
+
+---
+
+## Características en Desarrollo
+
+### Firewalls
+- **Próximamente disponible**: Consulta la configuración y estado de dispositivos perimetrales, filtrado de tráfico y protección de la infraestructura del DataCenter.
+
+### Routers
+- **Próximamente disponible**: Información detallada sobre dispositivos de enrutamiento, incluyendo configuraciones IP, protocolos y roles en la infraestructura.
+
+### Switches
+- **Próximamente disponible**: Gestión de conectividad interna, asignación de puertos y configuraciones VLAN.
+
+---
+
+## Filtros y Seguridad
+- **Filtro limitador de red**: Implementación para controlar y gestionar el tráfico de solicitudes de usuarios.
 
 ---
 
@@ -55,7 +88,7 @@
 1. Tener [Java 17+](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html) instalado.
 2. [Maven](https://maven.apache.org/install.html) para gestionar las dependencias y construir el proyecto.
 3. Una base de datos configurada (como MySQL, PostgreSQL, etc.) para almacenar la información de la infraestructura.
-4. En la raíz del proyecto se encuentra un archivo con la base de datos de prueba con el nombre 'rackmaster_data_postgresql.sql', que se usó en la explicación del video.
+4. Archivo de base de datos de prueba: rackmaster_data_postgresql.sql, ubicado en la raíz del proyecto.
 
 ### Pasos de instalación
 
