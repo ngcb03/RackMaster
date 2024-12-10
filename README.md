@@ -33,7 +33,10 @@
 ### 9. Información de Máquina Virtual (Pantalla 2)
 ![Información de Máquina Virtual 2](https://github.com/user-attachments/assets/ec2f6fbf-0ae1-402f-8802-79efd3214c4f)
 
-### 10. Gestión de Cuentas
+### 10. Gestión de Credenciales
+![Gestión de Credenciales](https://github.com/user-attachments/assets/18ae8f00-0bdd-447f-9637-b911bf49409c)
+
+### 11. Gestión de Cuentas
 ![Gestión de Cuentas](https://github.com/user-attachments/assets/4b7e783d-9263-4e63-bce4-e737f4b72fe6)
 
 ---
