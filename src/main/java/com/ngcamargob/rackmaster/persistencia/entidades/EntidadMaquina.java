@@ -2,10 +2,16 @@ package com.ngcamargob.rackmaster.persistencia.entidades;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 @Entity
 @Table(name="maquinas_virtuales")
@@ -69,6 +75,7 @@ public class EntidadMaquina {
     @Min(value = 0, message = "La RAM asignada debe ser mayor a 0.")
     private Integer ram_asig;
 
+    @Column(name = "en_uso")
     private boolean en_uso;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -79,165 +86,6 @@ public class EntidadMaquina {
 
     @OneToMany(mappedBy = "maquina")
     private List<EntidadCredencial> credenciales;
-
-    public EntidadMaquina() {
-    }
-
-    public EntidadMaquina(Integer maquina_id, String nombre, String nombre_en_hipervisor, Integer id_en_hipervisor, String ip, String mac, String sistema_op, String servicio, String proyecto, String aplicacion, String procesador_asig, String almacenamiento_asig, Integer almacenamiento_total, Integer ram_asig, boolean en_uso, EntidadServidor servidor, List<EntidadCredencial> credenciales) {
-        this.maquina_id = maquina_id;
-        this.nombre = nombre;
-        this.nombre_en_hipervisor = nombre_en_hipervisor;
-        this.id_en_hipervisor = id_en_hipervisor;
-        this.ip = ip;
-        this.mac = mac;
-        this.sistema_op = sistema_op;
-        this.servicio = servicio;
-        this.proyecto = proyecto;
-        this.aplicacion = aplicacion;
-        this.procesador_asig = procesador_asig;
-        this.almacenamiento_asig = almacenamiento_asig;
-        this.almacenamiento_total = almacenamiento_total;
-        this.ram_asig = ram_asig;
-        this.en_uso = en_uso;
-        this.servidor = servidor;
-        this.credenciales = credenciales;
-    }
-
-    public Integer getMaquina_id() {
-        return maquina_id;
-    }
-
-    public void setMaquina_id(Integer maquina_id) {
-        this.maquina_id = maquina_id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getNombre_en_hipervisor() {
-        return nombre_en_hipervisor;
-    }
-
-    public void setNombre_en_hipervisor(String nombre_en_hipervisor) {
-        this.nombre_en_hipervisor = nombre_en_hipervisor;
-    }
-
-    public Integer getId_en_hipervisor() {
-        return id_en_hipervisor;
-    }
-
-    public void setId_en_hipervisor(Integer id_en_hipervisor) {
-        this.id_en_hipervisor = id_en_hipervisor;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
-    public String getSistema_op() {
-        return sistema_op;
-    }
-
-    public void setSistema_op(String sistema_op) {
-        this.sistema_op = sistema_op;
-    }
-
-    public String getServicio() {
-        return servicio;
-    }
-
-    public void setServicio(String servicio) {
-        this.servicio = servicio;
-    }
-
-    public String getProyecto() {
-        return proyecto;
-    }
-
-    public void setProyecto(String proyecto) {
-        this.proyecto = proyecto;
-    }
-
-    public String getAplicacion() {
-        return aplicacion;
-    }
-
-    public void setAplicacion(String aplicacion) {
-        this.aplicacion = aplicacion;
-    }
-
-    public String getProcesador_asig() {
-        return procesador_asig;
-    }
-
-    public void setProcesador_asig(String procesador_asig) {
-        this.procesador_asig = procesador_asig;
-    }
-
-    public String getAlmacenamiento_asig() {
-        return almacenamiento_asig;
-    }
-
-    public void setAlmacenamiento_asig(String almacenamiento_asig) {
-        this.almacenamiento_asig = almacenamiento_asig;
-    }
-
-    public Integer getAlmacenamiento_total() {
-        return almacenamiento_total;
-    }
-
-    public void setAlmacenamiento_total(Integer almacenamiento_total) {
-        this.almacenamiento_total = almacenamiento_total;
-    }
-
-    public Integer getRam_asig() {
-        return ram_asig;
-    }
-
-    public void setRam_asig(Integer ram_asig) {
-        this.ram_asig = ram_asig;
-    }
-
-    public boolean isEn_uso() {
-        return en_uso;
-    }
-
-    public void setEn_uso(boolean en_uso) {
-        this.en_uso = en_uso;
-    }
-
-    public EntidadServidor getServidor() {
-        return servidor;
-    }
-
-    public void setServidor(EntidadServidor servidor) {
-        this.servidor = servidor;
-    }
-
-    public List<EntidadCredencial> getCredenciales() {
-        return credenciales;
-    }
-
-    public void setCredenciales(List<EntidadCredencial> credenciales) {
-        this.credenciales = credenciales;
-    }
 
     @Override
     public String toString() {

@@ -6,9 +6,9 @@ import com.ngcamargob.rackmaster.utilidades.AppUtil;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvCuentaDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,19 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/rackmaster")
+@RequiredArgsConstructor
 public class GeneralControl {
 
-    @Autowired
-    private IServCuenta servCuenta;
-
-    @Autowired
-    private AppUtil appUtil;
-
-    @Autowired
-    private ConvCuentaDTO convCuentaDTO;
+    private final IServCuenta servCuenta;
+    private final AppUtil appUtil;
+    private final ConvCuentaDTO convCuentaDTO;
 
     private static boolean first_instance = true;
     private boolean invalid_session = false;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(GeneralControl.class);
 
 

@@ -2,10 +2,16 @@ package com.ngcamargob.rackmaster.persistencia.entidades;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 @Entity
 @Table(name="servidores_fisicos")
@@ -14,8 +20,6 @@ public class EntidadServidor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer servidor_id;
-
-    private boolean en_uso;
 
     @NotBlank
     @Size(max = 160, message = "El nombre debe tener un máximo de 160 caracteres.")
@@ -77,6 +81,9 @@ public class EntidadServidor {
     @Size(max = 160, message = "El nombre de la sede debe tener un máximo de 160 caracteres.")
     private String sede;
 
+    @Column(name = "en_uso")
+    private boolean en_uso;
+
     @OneToMany(mappedBy = "servidor")
     private List<EntidadMaquina> maquinas;
 
@@ -86,183 +93,6 @@ public class EntidadServidor {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "cluster_id", referencedColumnName = "cluster_id")
     private EntidadCluster cluster;
-
-    public EntidadServidor() {
-    }
-
-    public EntidadServidor(Integer servidor_id, boolean en_uso, String nombre, String ip, String mac, String sistema_op, String modelo, String procesador, String discos, Integer almacenamiento_total, Integer ram, String serial, Integer placa, String rack, byte unidad, String sede, List<EntidadMaquina> maquinas, List<EntidadCredencial> credenciales, EntidadCluster cluster) {
-        this.servidor_id = servidor_id;
-        this.en_uso = en_uso;
-        this.nombre = nombre;
-        this.ip = ip;
-        this.mac = mac;
-        this.sistema_op = sistema_op;
-        this.modelo = modelo;
-        this.procesador = procesador;
-        this.discos = discos;
-        this.almacenamiento_total = almacenamiento_total;
-        this.ram = ram;
-        this.serial = serial;
-        this.placa = placa;
-        this.rack = rack;
-        this.unidad = unidad;
-        this.sede = sede;
-        this.maquinas = maquinas;
-        this.credenciales = credenciales;
-        this.cluster = cluster;
-    }
-
-    public Integer getServidor_id() {
-        return servidor_id;
-    }
-
-    public void setServidor_id(Integer servidor_id) {
-        this.servidor_id = servidor_id;
-    }
-
-    public boolean isEn_uso() {
-        return en_uso;
-    }
-
-    public void setEn_uso(boolean en_uso) {
-        this.en_uso = en_uso;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
-    public String getSistema_op() {
-        return sistema_op;
-    }
-
-    public void setSistema_op(String sistema_op) {
-        this.sistema_op = sistema_op;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public String getProcesador() {
-        return procesador;
-    }
-
-    public void setProcesador(String procesador) {
-        this.procesador = procesador;
-    }
-
-    public String getDiscos() {
-        return discos;
-    }
-
-    public void setDiscos(String discos) {
-        this.discos = discos;
-    }
-
-    public Integer getAlmacenamiento_total() {
-        return almacenamiento_total;
-    }
-
-    public void setAlmacenamiento_total(Integer almacenamiento_total) {
-        this.almacenamiento_total = almacenamiento_total;
-    }
-
-    public Integer getRam() {
-        return ram;
-    }
-
-    public void setRam(Integer ram) {
-        this.ram = ram;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public Integer getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(Integer placa) {
-        this.placa = placa;
-    }
-
-    public String getRack() {
-        return rack;
-    }
-
-    public void setRack(String rack) {
-        this.rack = rack;
-    }
-
-    public byte getUnidad() {
-        return unidad;
-    }
-
-    public void setUnidad(byte unidad) {
-        this.unidad = unidad;
-    }
-
-    public String getSede() {
-        return sede;
-    }
-
-    public void setSede(String sede) {
-        this.sede = sede;
-    }
-
-    public List<EntidadMaquina> getMaquinas() {
-        return maquinas;
-    }
-
-    public void setMaquinas(List<EntidadMaquina> maquinas) {
-        this.maquinas = maquinas;
-    }
-
-    public List<EntidadCredencial> getCredenciales() {
-        return credenciales;
-    }
-
-    public void setCredenciales(List<EntidadCredencial> credenciales) {
-        this.credenciales = credenciales;
-    }
-
-    public EntidadCluster getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(EntidadCluster cluster) {
-        this.cluster = cluster;
-    }
 
 
     @Override

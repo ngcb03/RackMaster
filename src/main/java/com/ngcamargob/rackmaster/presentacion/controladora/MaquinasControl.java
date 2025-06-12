@@ -15,9 +15,9 @@ import com.ngcamargob.rackmaster.utilidades.AppUtil;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvCredencialDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvMaquinaDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvServidorDTO;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,31 +29,17 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/rackmaster/maquinas-virtuales")
+@RequiredArgsConstructor
 public class MaquinasControl {
 
-    @Autowired
-    private IServMaquina servMaquina;
-
-    @Autowired
-    private IServServidor servServidor;
-
-    @Autowired
-    private IServCluster servCluster;
-
-    @Autowired
-    private IServCredencial servCredencial;
-
-    @Autowired
-    private ConvMaquinaDTO convMaquinaDTO;
-
-    @Autowired
-    private ConvServidorDTO convServidorDTO;
-
-    @Autowired
-    private ConvCredencialDTO convCredencialDTO;
-
-    @Autowired
-    private AppUtil appUtil;
+    private final IServMaquina servMaquina;
+    private final IServServidor servServidor;
+    private final IServCluster servCluster;
+    private final IServCredencial servCredencial;
+    private final ConvMaquinaDTO convMaquinaDTO;
+    private final ConvServidorDTO convServidorDTO;
+    private final ConvCredencialDTO convCredencialDTO;
+    private final AppUtil appUtil;
 
     private List<EntidadMaquina> maquinasPaginables = new ArrayList<>();
     private Integer totalPages = null;
@@ -63,7 +49,9 @@ public class MaquinasControl {
     private static Integer total_maquinas = null;
     private MaquinaDTO maquinaAux = new MaquinaDTO();
     private List<String> datos_duplicados = new ArrayList<>();
+
     private final static Logger LOGGER = LoggerFactory.getLogger(MaquinasControl.class);
+
 
     private List<EntidadMaquina> obtenerPagina(List<EntidadMaquina> listaCompleta, int page, int pageSize) {
         int start = page * pageSize;

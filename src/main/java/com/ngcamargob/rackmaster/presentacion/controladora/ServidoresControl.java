@@ -15,9 +15,9 @@ import com.ngcamargob.rackmaster.utilidades.AppUtil;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvCredencialDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvMaquinaDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvServidorDTO;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,31 +27,17 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/rackmaster/servidores")
+@RequiredArgsConstructor
 public class ServidoresControl {
 
-    @Autowired
-    private IServServidor servServidor;
-
-    @Autowired
-    private IServMaquina servMaquina;
-
-    @Autowired
-    private IServCluster servCluster;
-
-    @Autowired
-    private IServCredencial servCredencial;
-
-    @Autowired
-    private AppUtil appUtil;
-
-    @Autowired
-    private ConvServidorDTO convServidorDTO;
-
-    @Autowired
-    private ConvMaquinaDTO convMaquinaDTO;
-
-    @Autowired
-    private ConvCredencialDTO convCredencialDTO;
+    private final IServServidor servServidor;
+    private final IServMaquina servMaquina;
+    private final IServCluster servCluster;
+    private final IServCredencial servCredencial;
+    private final AppUtil appUtil;
+    private final ConvServidorDTO convServidorDTO;
+    private final ConvMaquinaDTO convMaquinaDTO;
+    private final ConvCredencialDTO convCredencialDTO;
 
     private List<EntidadServidor> servidoresPaginables = new ArrayList<>();
     private Integer totalPages = null;
@@ -61,6 +47,7 @@ public class ServidoresControl {
     private Integer total_servidores = null;
     private ServidorDTO servidorAux = new ServidorDTO();
     private List<String> datos_duplicados = new ArrayList<>();
+
     private final static Logger LOGGER = LoggerFactory.getLogger(ServidoresControl.class);
 
 

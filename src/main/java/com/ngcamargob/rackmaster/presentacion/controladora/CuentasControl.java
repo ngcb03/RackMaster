@@ -9,9 +9,9 @@ import com.ngcamargob.rackmaster.servicio.interfaces.IServCuenta;
 import com.ngcamargob.rackmaster.servicio.interfaces.IServRol;
 import com.ngcamargob.rackmaster.utilidades.AppUtil;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvCuentaDTO;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,25 +26,15 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/rackmaster/cuentas")
+@RequiredArgsConstructor
 public class CuentasControl {
 
-    @Autowired
-    private IServCuenta servCuenta;
-
-    @Autowired
-    private IServRol servRol;
-
-    @Autowired
-    private IServCargo servCargo;
-
-    @Autowired
-    private SessionRegistry sessionRegistry;
-
-    @Autowired
-    private AppUtil appUtil;
-
-    @Autowired
-    private ConvCuentaDTO convCuentaDTO;
+    private final IServCuenta servCuenta;
+    private final IServRol servRol;
+    private final IServCargo servCargo;
+    private final SessionRegistry sessionRegistry;
+    private final AppUtil appUtil;
+    private final ConvCuentaDTO convCuentaDTO;
 
     private List<EntidadCuenta> cuentasPaginables = new ArrayList<>();
     private Integer totalPages = null;
@@ -54,6 +44,7 @@ public class CuentasControl {
     private CuentaDTO cuentaDTO = new CuentaDTO();
     private List<String> datos_duplicados = new ArrayList<>();
     private Integer total_cuentas = null;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(CuentasControl.class);
 
 

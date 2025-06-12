@@ -2,8 +2,14 @@ package com.ngcamargob.rackmaster.persistencia.entidades.enums_entity;
 
 import com.ngcamargob.rackmaster.persistencia.entidades.enums.ECargo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 @Entity
 @Table(name="cargos")
@@ -16,30 +22,6 @@ public class EntidadCargo {
     @Enumerated(EnumType.STRING)
     private ECargo cargoUsuario;
 
-    public EntidadCargo() {
-    }
-
-    public EntidadCargo(Integer cargo_id, ECargo cargoUsuario) {
-        this.cargo_id = cargo_id;
-        this.cargoUsuario = cargoUsuario;
-    }
-
-    public Integer getCargo_id() {
-        return cargo_id;
-    }
-
-    public void setCargo_id(Integer cargo_id) {
-        this.cargo_id = cargo_id;
-    }
-
-    public ECargo getCargoUsuario() {
-        return cargoUsuario;
-    }
-
-    public void setCargoUsuario(ECargo cargoUsuario) {
-        this.cargoUsuario = cargoUsuario;
-    }
-
     @Override
     public String toString() {
         return "EntidadCargo{" +
@@ -47,5 +29,5 @@ public class EntidadCargo {
                 ", cargoUsuario=" + cargoUsuario +
                 '}';
     }
-
 }
+

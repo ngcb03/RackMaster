@@ -1,6 +1,5 @@
 package com.ngcamargob.rackmaster.presentacion.controladora;
 
-
 import com.ngcamargob.rackmaster.persistencia.entidades.EntidadCluster;
 import com.ngcamargob.rackmaster.persistencia.entidades.EntidadMaquina;
 import com.ngcamargob.rackmaster.persistencia.entidades.EntidadServidor;
@@ -14,9 +13,9 @@ import com.ngcamargob.rackmaster.utilidades.AppUtil;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvClusterDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvMaquinaDTO;
 import com.ngcamargob.rackmaster.utilidades.mapper.ConvServidorDTO;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,32 +25,20 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/rackmaster/clusters")
+@RequiredArgsConstructor
 public class ClustersControl {
 
-    @Autowired
-    private IServCluster servCluster;
-
-    @Autowired
-    private IServServidor servServidor;
-
-    @Autowired
-    private IServMaquina servMaquina;
-
-    @Autowired
-    private AppUtil appUtil;
-
-    @Autowired
-    private ConvClusterDTO convClusterDTO;
-
-    @Autowired
-    private ConvServidorDTO convServidorDTO;
-
-    @Autowired
-    private ConvMaquinaDTO convMaquinaDTO;
-
+    private final IServCluster servCluster;
+    private final IServServidor servServidor;
+    private final IServMaquina servMaquina;
+    private final AppUtil appUtil;
+    private final ConvClusterDTO convClusterDTO;
+    private final ConvServidorDTO convServidorDTO;
+    private final ConvMaquinaDTO convMaquinaDTO;
 
     private ClusterDTO clusterAux = new ClusterDTO();
     private List<String> datos_duplicados = new ArrayList<>();
+
     private final static Logger LOGGER = LoggerFactory.getLogger(ClustersControl.class);
 
 
