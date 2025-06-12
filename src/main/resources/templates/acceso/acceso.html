@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="Software para gestionar la infraestructura de datacenters:
+    documenta servidores, máquinas virtuales, clústeres y switches, almacenando de forma segura
+    credenciales de servidores y máquinas, garantizando eficiencia y seguridad." />
+  <meta name="author" content="Nicolas Gabriel Camargo Buelvas" />
+  <title>RackMaster - Acceso</title>
+
+  <!-- Bootstrap core CSS -->
+  <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/global.css}" rel="stylesheet" />
+
+  <style>
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      margin: 60px auto 40px;
+    }
+
+    .login-container .btn {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      html {
+        min-width: 320px;
+      }
+
+      .login-container {
+        max-width: 320px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .login-container {
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/rackmaster/inicio}">RackMaster</a>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+  <div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="card-body text-center">
+        <h2>Iniciar sesión</h2>
+      </div>
+    </div>
+  </div>
+
+  <form th:action="@{/rackmaster/acceder}" method="post" class="login-container">
+    <div class="form-group">
+      <label for="username"> Usuario: </label>
+      <input type="text" class="form-control" id="username" name="username" placeholder="Ingrese su usuario"
+             required />
+    </div>
+
+    <div class="form-group">
+      <label for="password"> Contraseña:</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña"
+             required />
+    </div>
+
+    <div th:if="${invalid_session == true}" class="mt-3 mb-3">
+      <p style="color: red;">¡Usuario o contraseña incorrecto, vuelva a intentarlo!</p>
+    </div>
+
+    <div class="form-group mt-4">
+      <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-ok"></span> Ingresar
+      </button>
+    </div>
+  </form>
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+<div th:insert="~{template_general.html::footer}"></div>
+</body>
+
+</html>
